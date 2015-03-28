@@ -58,6 +58,14 @@
 
     });
 
+    it('Should return Pitch class set map',
+      function(){
+
+      var aPCSet = forte.PitchClassSet.withArray([0,4,7,8]);
+      expect(aPCSet.hash.map).toEqual([1,0,0,0,1,0,0,1,1,0,0,0]);
+
+    });
+
   });
 
 })();
