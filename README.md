@@ -22,10 +22,3 @@ Version 0.0.1
 
     pc.iv.toString();
     //returns '<101310>'
-
-## Other functions
-
-### Get pitch class set map
-
-    pc.hash.map
-    //returns [1,0,0,0,1,0,0,1,1,0,0,0]

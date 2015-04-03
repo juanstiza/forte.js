@@ -1,6 +1,8 @@
 @import "../tmp/lodash.js";
 
-!function(){
+(function(){
+
+  var VERSION = '0.0.1';
 
   var forte = forte || {};
 
@@ -10,6 +12,8 @@
   @import "PitchClassCollection.js";
   @import "PitchClassSet.js";
 
+  forte.VERSION = VERSION;
+
   this.forte = forte;
 
-}();
+}());

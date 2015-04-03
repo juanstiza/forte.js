@@ -47,17 +47,32 @@ module.exports = function(grunt) {
               include: ['each','sortBy','isEqual']
             }
           }
+        },
+
+        uglify: {
+          options: {
+            mangle: {
+              except: ['forte']
+            }
+          },
+          build: {
+            files: {
+              'dist/forte.min.js':['dist/forte.js']
+            }
+          }
         }
-        
+
     });
 
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-clean');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-import');
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-lodash');
 
     grunt.registerTask('dev', ['clean','lodash:build', 'import:dist', 'karma:unit','watch:dev']);
+    grunt.registerTask('build', ['clean','lodash:build', 'import:dist', 'karma:unit','uglify:build']);
 
 };

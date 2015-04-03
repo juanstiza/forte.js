@@ -1,11 +1,14 @@
 {
   "name": "fortejs",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "authors": [
     "Juan Stiza <juanstiza@gmail.com>"
   ],
+  "repository" : {
+    "type" : "git",
+    "url" : "http://github.com/juanstiza/forte.js.git"
+  },
   "license": "MIT",
-  "private": true,
   "ignore": [
     "**/.*",
     "node_modules",
