@@ -35,14 +35,29 @@ module.exports = function(grunt) {
                 singleRun: false,
                 autoWatch: true
             }
+        },
+
+        clean: ['tmp','dist'],
+
+        lodash: {
+          build: {
+            dest: 'tmp/lodash.js',
+            options: {
+              modifier: 'modern',
+              include: ['each','sortBy','isEqual']
+            }
+          }
         }
+        
     });
 
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-import');
     grunt.loadNpmTasks('grunt-karma');
+    grunt.loadNpmTasks('grunt-lodash');
 
-    grunt.registerTask('dev', [ 'import:dist', 'karma:unit','watch:dev']);
+    grunt.registerTask('dev', ['clean','lodash:build', 'import:dist', 'karma:unit','watch:dev']);
 
 };

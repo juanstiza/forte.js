@@ -1,4 +1,4 @@
-@import "../bower_components/lodash/lodash.min.js";
+@import "../tmp/lodash.js";
 
 !function(){
 
