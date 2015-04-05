@@ -2,7 +2,7 @@
 
 (function(){
 
-  var VERSION = '0.0.2';
+  var VERSION = '0.0.3';
 
   var forte = forte || {};
 
