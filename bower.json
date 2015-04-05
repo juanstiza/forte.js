@@ -1,9 +1,7 @@
 {
   "name": "fortejs",
-  "version": "0.0.3",
-  "main": {
-    "dist/forte.js"
-  },
+  "version": "0.0.4",
+  "main": "dist/forte.js",
   "authors": [
     "Juan Stiza <juanstiza@gmail.com>"
   ],
