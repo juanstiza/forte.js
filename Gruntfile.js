@@ -44,7 +44,8 @@ module.exports = function(grunt) {
             dest: 'tmp/lodash.js',
             options: {
               modifier: 'modern',
-              include: ['each','sortBy','isEqual']
+              include: ['each','sortBy','isEqual'],
+              category: ['lang']
             }
           }
         },

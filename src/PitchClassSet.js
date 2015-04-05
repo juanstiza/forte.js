@@ -23,7 +23,7 @@ forte.PitchClassSet = (function(PitchClass,
         get arrayValue() {
             var theResult = [];
             _.forEach(this._.theSet, function(value, index) {
-                this.push(value.intValue);
+                this.push(value.getIntValue());
             }, theResult);
             return theResult;
         },
@@ -59,9 +59,9 @@ forte.PitchClassSet = (function(PitchClass,
         var multi = [];
         _.forEach(aPitchClassSet._.theSet, function(aPitchClass, index) {
             this.push({
-                sd:aPitchClassSet.copy().transpose(aPitchClass.intValue).normalize().sd(),
-                string:aPitchClassSet.copy().transpose(aPitchClass.intValue).normalize().normalForm.toString(),
-                value:aPitchClassSet.copy().transpose(aPitchClass.intValue).normalize()
+                sd:aPitchClassSet.copy().transpose(aPitchClass.getIntValue()).normalize().sd(),
+                string:aPitchClassSet.copy().transpose(aPitchClass.getIntValue()).normalize().normalForm.toString(),
+                value:aPitchClassSet.copy().transpose(aPitchClass.getIntValue()).normalize()
             });
         }, multi);
         var ordered = _.sortBy(multi, 'sd');
@@ -101,8 +101,10 @@ forte.PitchClassSet = (function(PitchClass,
     };
 
     PitchClassSet.prototype.normalize = function() {
-        var newSet = _.sortBy(this._.theSet, 'intValue');
-        var index = newSet[0].intValue;
+        var newSet = _.sortBy(this._.theSet, function(n){
+          return n.getIntValue();
+        });
+        var index = newSet[0].getIntValue();
         this._.theSet = newSet;
         this.transpose(-index);
         return this;
@@ -164,9 +166,9 @@ forte.PitchClassSet = (function(PitchClass,
         var setHashMap = {};
         _.forEach(aSet, function(a) {
             _.forEach(aSet, function(b){
-                if (a.intValue != b.intValue) {
-                    var hash = ((a.intValue + b.intValue + 1) / ((a.intValue * b.intValue) + 1)).toString();
-                    setHashMap[hash] = [a.intValue, b.intValue];
+                if (a.getIntValue() != b.getIntValue()) {
+                    var hash = ((a.getIntValue() + b.getIntValue() + 1) / ((a.getIntValue() * b.getIntValue()) + 1)).toString();
+                    setHashMap[hash] = [a.getIntValue(), b.getIntValue()];
                 }
             });
         });

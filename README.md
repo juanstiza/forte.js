@@ -4,21 +4,37 @@ Version 0.0.1
 
 ## API
 
+## Pitch Class
+
+    var pc = forte.PitchClass.withInt(7);
+
+    pc.toString();
+    //returns '7';
+    pc.toString('latin');
+    //returns 'Sol'
+    pc.toString('american');
+    //returns 'g'
+
+    pc.getIntValue();
+    //returns 7
+
+## Pitch Class Set
+
 ### Create new Pitch Class Set
 
-    var pc = forte.PitchClassSet.withArray([0,4,7,8]);
+    var pcs = forte.PitchClassSet.withArray([0,4,7,8]);
 
 ### Get prime form
 
-    pc.primeForm.toString();
+    pcs.primeForm.toString();
     //returns '(0,1,4,8)'
 
 ### Get prime inversion
 
-    pc.primeInversion.toString();
+    pcs.primeInversion.toString();
     //returns '[0,3,4,8]'
 
 ### Get interval vector
 
-    pc.iv.toString();
+    pcs.iv.toString();
     //returns '<101310>'

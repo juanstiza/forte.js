@@ -1,7 +1,7 @@
 /**
  * @license
  * lodash 3.6.0 (Custom Build) <https://lodash.com/>
- * Build: `lodash modern include="each,sortBy,isEqual" --output tmp/lodash.js`
+ * Build: `lodash modern include="each,sortBy,isEqual" category="lang" --output tmp/lodash.js`
  * Copyright 2012-2015 The Dojo Foundation <http://dojofoundation.org/>
  * Based on Underscore.js 1.8.2 <http://underscorejs.org/LICENSE>
  * Copyright 2009-2015 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -144,6 +144,20 @@
   }
 
   /**
+   * The base implementation of `_.isFunction` without support for environments
+   * with incorrect `typeof` results.
+   *
+   * @private
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+   */
+  function baseIsFunction(value) {
+    // Avoid a Chakra JIT bug in compatibility modes of IE 11.
+    // See https://github.com/jashkenas/underscore/issues/1621 for more details.
+    return typeof value == 'function' || false;
+  }
+
+  /**
    * Converts `value` to a string if it is not one. An empty string is returned
    * for `null` or `undefined` values.
    *
@@ -187,6 +201,9 @@
   /** Used for native method references. */
   var objectProto = Object.prototype;
 
+  /** Used to detect DOM support. */
+  var document = (document = root.window) && document.document;
+
   /** Used to resolve the decompiled source of functions. */
   var fnToString = Function.prototype.toString;
 
@@ -209,6 +226,7 @@
   var ArrayBuffer = isNative(ArrayBuffer = root.ArrayBuffer) && ArrayBuffer,
       bufferSlice = isNative(bufferSlice = ArrayBuffer && new ArrayBuffer(0).slice) && bufferSlice,
       floor = Math.floor,
+      getPrototypeOf = isNative(getPrototypeOf = Object.getPrototypeOf) && getPrototypeOf,
       propertyIsEnumerable = objectProto.propertyIsEnumerable,
       Uint8Array = isNative(Uint8Array = root.Uint8Array) && Uint8Array;
 
@@ -226,7 +244,9 @@
 
   /* Native method references for those with the same name as other `lodash` methods. */
   var nativeIsArray = isNative(nativeIsArray = Array.isArray) && nativeIsArray,
-      nativeKeys = isNative(nativeKeys = Object.keys) && nativeKeys;
+      nativeIsFinite = root.isFinite,
+      nativeKeys = isNative(nativeKeys = Object.keys) && nativeKeys,
+      nativeNumIsFinite = isNative(nativeNumIsFinite = Number.isFinite) && nativeNumIsFinite;
 
   /** Used as the size, in bytes, of each `Float64Array` element. */
   var FLOAT64_BYTES_PER_ELEMENT = Float64Array ? Float64Array.BYTES_PER_ELEMENT : 0;
@@ -364,6 +384,18 @@
      * @type boolean
      */
     support.funcNames = typeof Function.name == 'string';
+
+    /**
+     * Detect if the DOM is supported.
+     *
+     * @memberOf _.support
+     * @type boolean
+     */
+    try {
+      support.dom = document.createDocumentFragment().nodeType === 11;
+    } catch(e) {
+      support.dom = false;
+    }
 
     /**
      * Detect if `arguments` object indexes are non-enumerable.
@@ -569,6 +601,19 @@
    * @returns {Object} Returns `object`.
    */
   var baseFor = createBaseFor();
+
+  /**
+   * The base implementation of `_.forIn` without support for callback
+   * shorthands and `this` binding.
+   *
+   * @private
+   * @param {Object} object The object to iterate over.
+   * @param {Function} iteratee The function invoked per iteration.
+   * @returns {Object} Returns `object`.
+   */
+  function baseForIn(object, iteratee) {
+    return baseFor(object, iteratee, keysIn);
+  }
 
   /**
    * The base implementation of `_.forOwn` without support for callback
@@ -832,6 +877,27 @@
       array[length] = array[length].value;
     }
     return array;
+  }
+
+  /**
+   * The base implementation of `_.values` and `_.valuesIn` which creates an
+   * array of `object` property values corresponding to the property names
+   * returned by `keysFunc`.
+   *
+   * @private
+   * @param {Object} object The object to query.
+   * @param {Array} props The property names to get values for.
+   * @returns {Object} Returns the array of property values.
+   */
+  function baseValues(object, props) {
+    var index = -1,
+        length = props.length,
+        result = Array(length);
+
+    while (++index < length) {
+      result[index] = object[props[index]];
+    }
+    return result;
   }
 
   /**
@@ -1280,6 +1346,38 @@
   }
 
   /**
+   * A fallback implementation of `_.isPlainObject` which checks if `value`
+   * is an object created by the `Object` constructor or has a `[[Prototype]]`
+   * of `null`.
+   *
+   * @private
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
+   */
+  function shimIsPlainObject(value) {
+    var Ctor,
+        support = lodash.support;
+
+    // Exit early for non `Object` objects.
+    if (!(isObjectLike(value) && objToString.call(value) == objectTag) ||
+        (!hasOwnProperty.call(value, 'constructor') &&
+          (Ctor = value.constructor, typeof Ctor == 'function' && !(Ctor instanceof Ctor)))) {
+      return false;
+    }
+    // IE < 9 iterates inherited properties before own properties. If the first
+    // iterated property is an object's own property then there are no inherited
+    // enumerable properties.
+    var result;
+    // In most environments an object's own properties are iterated before
+    // its inherited properties. If the last iterated property is an object's
+    // own property then there are no inherited enumerable properties.
+    baseForIn(value, function(subValue, key) {
+      result = key;
+    });
+    return typeof result == 'undefined' || hasOwnProperty.call(value, result);
+  }
+
+  /**
    * A fallback implementation of `Object.keys` which creates an array of the
    * own enumerable property names of `object`.
    *
@@ -1423,6 +1521,120 @@
   /*------------------------------------------------------------------------*/
 
   /**
+   * Creates a clone of `value`. If `isDeep` is `true` nested objects are cloned,
+   * otherwise they are assigned by reference. If `customizer` is provided it is
+   * invoked to produce the cloned values. If `customizer` returns `undefined`
+   * cloning is handled by the method instead. The `customizer` is bound to
+   * `thisArg` and invoked with two argument; (value [, index|key, object]).
+   *
+   * **Note:** This method is loosely based on the
+   * [structured clone algorithm](http://www.w3.org/TR/html5/infrastructure.html#internal-structured-cloning-algorithm).
+   * The enumerable properties of `arguments` objects and objects created by
+   * constructors other than `Object` are cloned to plain `Object` objects. An
+   * empty object is returned for uncloneable values such as functions, DOM nodes,
+   * Maps, Sets, and WeakMaps.
+   *
+   * @static
+   * @memberOf _
+   * @category Lang
+   * @param {*} value The value to clone.
+   * @param {boolean} [isDeep] Specify a deep clone.
+   * @param {Function} [customizer] The function to customize cloning values.
+   * @param {*} [thisArg] The `this` binding of `customizer`.
+   * @returns {*} Returns the cloned value.
+   * @example
+   *
+   * var users = [
+   *   { 'user': 'barney' },
+   *   { 'user': 'fred' }
+   * ];
+   *
+   * var shallow = _.clone(users);
+   * shallow[0] === users[0];
+   * // => true
+   *
+   * var deep = _.clone(users, true);
+   * deep[0] === users[0];
+   * // => false
+   *
+   * // using a customizer callback
+   * var el = _.clone(document.body, function(value) {
+   *   if (_.isElement(value)) {
+   *     return value.cloneNode(false);
+   *   }
+   * });
+   *
+   * el === document.body
+   * // => false
+   * el.nodeName
+   * // => BODY
+   * el.childNodes.length;
+   * // => 0
+   */
+  function clone(value, isDeep, customizer, thisArg) {
+    if (isDeep && typeof isDeep != 'boolean' && isIterateeCall(value, isDeep, customizer)) {
+      isDeep = false;
+    }
+    else if (typeof isDeep == 'function') {
+      thisArg = customizer;
+      customizer = isDeep;
+      isDeep = false;
+    }
+    customizer = typeof customizer == 'function' && bindCallback(customizer, thisArg, 1);
+    return baseClone(value, isDeep, customizer);
+  }
+
+  /**
+   * Creates a deep clone of `value`. If `customizer` is provided it is invoked
+   * to produce the cloned values. If `customizer` returns `undefined` cloning
+   * is handled by the method instead. The `customizer` is bound to `thisArg`
+   * and invoked with two argument; (value [, index|key, object]).
+   *
+   * **Note:** This method is loosely based on the
+   * [structured clone algorithm](http://www.w3.org/TR/html5/infrastructure.html#internal-structured-cloning-algorithm).
+   * The enumerable properties of `arguments` objects and objects created by
+   * constructors other than `Object` are cloned to plain `Object` objects. An
+   * empty object is returned for uncloneable values such as functions, DOM nodes,
+   * Maps, Sets, and WeakMaps.
+   *
+   * @static
+   * @memberOf _
+   * @category Lang
+   * @param {*} value The value to deep clone.
+   * @param {Function} [customizer] The function to customize cloning values.
+   * @param {*} [thisArg] The `this` binding of `customizer`.
+   * @returns {*} Returns the deep cloned value.
+   * @example
+   *
+   * var users = [
+   *   { 'user': 'barney' },
+   *   { 'user': 'fred' }
+   * ];
+   *
+   * var deep = _.cloneDeep(users);
+   * deep[0] === users[0];
+   * // => false
+   *
+   * // using a customizer callback
+   * var el = _.cloneDeep(document.body, function(value) {
+   *   if (_.isElement(value)) {
+   *     return value.cloneNode(true);
+   *   }
+   * });
+   *
+   * el === document.body
+   * // => false
+   * el.nodeName
+   * // => BODY
+   * el.childNodes.length;
+   * // => 20
+   */
+  function cloneDeep(value, customizer, thisArg) {
+    customizer = typeof customizer == 'function' && bindCallback(customizer, thisArg, 1);
+    return baseClone(value, true, customizer);
+  }
+
+  /**
    * Checks if `value` is classified as an `arguments` object.
    *
    * @static
@@ -1462,6 +1674,112 @@
   var isArray = nativeIsArray || function(value) {
     return isObjectLike(value) && isLength(value.length) && objToString.call(value) == arrayTag;
   };
+
+  /**
+   * Checks if `value` is classified as a boolean primitive or object.
+   *
+   * @static
+   * @memberOf _
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+   * @example
+   *
+   * _.isBoolean(false);
+   * // => true
+   *
+   * _.isBoolean(null);
+   * // => false
+   */
+  function isBoolean(value) {
+    return value === true || value === false || (isObjectLike(value) && objToString.call(value) == boolTag);
+  }
+
+  /**
+   * Checks if `value` is classified as a `Date` object.
+   *
+   * @static
+   * @memberOf _
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+   * @example
+   *
+   * _.isDate(new Date);
+   * // => true
+   *
+   * _.isDate('Mon April 23 2012');
+   * // => false
+   */
+  function isDate(value) {
+    return isObjectLike(value) && objToString.call(value) == dateTag;
+  }
+
+  /**
+   * Checks if `value` is a DOM element.
+   *
+   * @static
+   * @memberOf _
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a DOM element, else `false`.
+   * @example
+   *
+   * _.isElement(document.body);
+   * // => true
+   *
+   * _.isElement('<body>');
+   * // => false
+   */
+  function isElement(value) {
+    return !!value && value.nodeType === 1 && isObjectLike(value) &&
+      (objToString.call(value).indexOf('Element') > -1);
+  }
+  // Fallback for environments without DOM support.
+  if (!support.dom) {
+    isElement = function(value) {
+      return !!value && value.nodeType === 1 && isObjectLike(value) && !isPlainObject(value);
+    };
+  }
+
+  /**
+   * Checks if `value` is empty. A value is considered empty unless it is an
+   * `arguments` object, array, string, or jQuery-like collection with a length
+   * greater than `0` or an object with own enumerable properties.
+   *
+   * @static
+   * @memberOf _
+   * @category Lang
+   * @param {Array|Object|string} value The value to inspect.
+   * @returns {boolean} Returns `true` if `value` is empty, else `false`.
+   * @example
+   *
+   * _.isEmpty(null);
+   * // => true
+   *
+   * _.isEmpty(true);
+   * // => true
+   *
+   * _.isEmpty(1);
+   * // => true
+   *
+   * _.isEmpty([1, 2, 3]);
+   * // => false
+   *
+   * _.isEmpty({ 'a': 1 });
+   * // => false
+   */
+  function isEmpty(value) {
+    if (value == null) {
+      return true;
+    }
+    var length = value.length;
+    if (isLength(length) && (isArray(value) || isString(value) || isArguments(value) ||
+        (isObjectLike(value) && isFunction(value.splice)))) {
+      return !length;
+    }
+    return !keys(value).length;
+  }
 
   /**
    * Performs a deep comparison between two values to determine if they are
@@ -1516,6 +1834,81 @@
   }
 
   /**
+   * Checks if `value` is an `Error`, `EvalError`, `RangeError`, `ReferenceError`,
+   * `SyntaxError`, `TypeError`, or `URIError` object.
+   *
+   * @static
+   * @memberOf _
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is an error object, else `false`.
+   * @example
+   *
+   * _.isError(new Error);
+   * // => true
+   *
+   * _.isError(Error);
+   * // => false
+   */
+  function isError(value) {
+    return isObjectLike(value) && typeof value.message == 'string' && objToString.call(value) == errorTag;
+  }
+
+  /**
+   * Checks if `value` is a finite primitive number.
+   *
+   * **Note:** This method is based on [`Number.isFinite`](https://people.mozilla.org/~jorendorff/es6-draft.html#sec-number.isfinite).
+   *
+   * @static
+   * @memberOf _
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a finite number, else `false`.
+   * @example
+   *
+   * _.isFinite(10);
+   * // => true
+   *
+   * _.isFinite('10');
+   * // => false
+   *
+   * _.isFinite(true);
+   * // => false
+   *
+   * _.isFinite(Object(10));
+   * // => false
+   *
+   * _.isFinite(Infinity);
+   * // => false
+   */
+  var isFinite = nativeNumIsFinite || function(value) {
+    return typeof value == 'number' && nativeIsFinite(value);
+  };
+
+  /**
+   * Checks if `value` is classified as a `Function` object.
+   *
+   * @static
+   * @memberOf _
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+   * @example
+   *
+   * _.isFunction(_);
+   * // => true
+   *
+   * _.isFunction(/abc/);
+   * // => false
+   */
+  var isFunction = !(baseIsFunction(/x/) || (Uint8Array && !baseIsFunction(Uint8Array))) ? baseIsFunction : function(value) {
+    // The use of `Object#toString` avoids issues with the `typeof` operator
+    // in older versions of Chrome and Safari which return 'function' for regexes
+    // and Safari 8 equivalents which return 'object' for typed array constructors.
+    return objToString.call(value) == funcTag;
+  };
+
+  /**
    * Checks if `value` is the [language type](https://es5.github.io/#x8) of `Object`.
    * (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
    *
@@ -1540,6 +1933,105 @@
     // See https://code.google.com/p/v8/issues/detail?id=2291 for more details.
     var type = typeof value;
     return type == 'function' || (!!value && type == 'object');
+  }
+
+  /**
+   * Performs a deep comparison between `object` and `source` to determine if
+   * `object` contains equivalent property values. If `customizer` is provided
+   * it is invoked to compare values. If `customizer` returns `undefined`
+   * comparisons are handled by the method instead. The `customizer` is bound
+   * to `thisArg` and invoked with three arguments: (value, other, index|key).
+   *
+   * **Note:** This method supports comparing properties of arrays, booleans,
+   * `Date` objects, numbers, `Object` objects, regexes, and strings. Functions
+   * and DOM nodes are **not** supported. Provide a customizer function to extend
+   * support for comparing other values.
+   *
+   * @static
+   * @memberOf _
+   * @category Lang
+   * @param {Object} object The object to inspect.
+   * @param {Object} source The object of property values to match.
+   * @param {Function} [customizer] The function to customize comparing values.
+   * @param {*} [thisArg] The `this` binding of `customizer`.
+   * @returns {boolean} Returns `true` if `object` is a match, else `false`.
+   * @example
+   *
+   * var object = { 'user': 'fred', 'age': 40 };
+   *
+   * _.isMatch(object, { 'age': 40 });
+   * // => true
+   *
+   * _.isMatch(object, { 'age': 36 });
+   * // => false
+   *
+   * // using a customizer callback
+   * var object = { 'greeting': 'hello' };
+   * var source = { 'greeting': 'hi' };
+   *
+   * _.isMatch(object, source, function(value, other) {
+   *   return _.every([value, other], RegExp.prototype.test, /^h(?:i|ello)$/) || undefined;
+   * });
+   * // => true
+   */
+  function isMatch(object, source, customizer, thisArg) {
+    var props = keys(source),
+        length = props.length;
+
+    if (!length) {
+      return true;
+    }
+    if (object == null) {
+      return false;
+    }
+    customizer = typeof customizer == 'function' && bindCallback(customizer, thisArg, 3);
+    if (!customizer && length == 1) {
+      var key = props[0],
+          value = source[key];
+
+      if (isStrictComparable(value)) {
+        return value === object[key] && (typeof value != 'undefined' || (key in toObject(object)));
+      }
+    }
+    var values = Array(length),
+        strictCompareFlags = Array(length);
+
+    while (length--) {
+      value = values[length] = source[props[length]];
+      strictCompareFlags[length] = isStrictComparable(value);
+    }
+    return baseIsMatch(toObject(object), props, values, strictCompareFlags, customizer);
+  }
+
+  /**
+   * Checks if `value` is `NaN`.
+   *
+   * **Note:** This method is not the same as [`isNaN`](https://es5.github.io/#x15.1.2.4)
+   * which returns `true` for `undefined` and other non-numeric values.
+   *
+   * @static
+   * @memberOf _
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is `NaN`, else `false`.
+   * @example
+   *
+   * _.isNaN(NaN);
+   * // => true
+   *
+   * _.isNaN(new Number(NaN));
+   * // => true
+   *
+   * isNaN(undefined);
+   * // => true
+   *
+   * _.isNaN(undefined);
+   * // => false
+   */
+  function isNaN(value) {
+    // An `NaN` primitive is the only value that is not equal to itself.
+    // Perform the `toStringTag` check first to avoid errors with some host objects in IE.
+    return isNumber(value) && value != +value;
   }
 
   /**
@@ -1569,6 +2061,134 @@
   }
 
   /**
+   * Checks if `value` is `null`.
+   *
+   * @static
+   * @memberOf _
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is `null`, else `false`.
+   * @example
+   *
+   * _.isNull(null);
+   * // => true
+   *
+   * _.isNull(void 0);
+   * // => false
+   */
+  function isNull(value) {
+    return value === null;
+  }
+
+  /**
+   * Checks if `value` is classified as a `Number` primitive or object.
+   *
+   * **Note:** To exclude `Infinity`, `-Infinity`, and `NaN`, which are classified
+   * as numbers, use the `_.isFinite` method.
+   *
+   * @static
+   * @memberOf _
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+   * @example
+   *
+   * _.isNumber(8.4);
+   * // => true
+   *
+   * _.isNumber(NaN);
+   * // => true
+   *
+   * _.isNumber('8.4');
+   * // => false
+   */
+  function isNumber(value) {
+    return typeof value == 'number' || (isObjectLike(value) && objToString.call(value) == numberTag);
+  }
+
+  /**
+   * Checks if `value` is a plain object, that is, an object created by the
+   * `Object` constructor or one with a `[[Prototype]]` of `null`.
+   *
+   * **Note:** This method assumes objects created by the `Object` constructor
+   * have no inherited enumerable properties.
+   *
+   * @static
+   * @memberOf _
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
+   * @example
+   *
+   * function Foo() {
+   *   this.a = 1;
+   * }
+   *
+   * _.isPlainObject(new Foo);
+   * // => false
+   *
+   * _.isPlainObject([1, 2, 3]);
+   * // => false
+   *
+   * _.isPlainObject({ 'x': 0, 'y': 0 });
+   * // => true
+   *
+   * _.isPlainObject(Object.create(null));
+   * // => true
+   */
+  var isPlainObject = !getPrototypeOf ? shimIsPlainObject : function(value) {
+    if (!(value && objToString.call(value) == objectTag)) {
+      return false;
+    }
+    var valueOf = value.valueOf,
+        objProto = isNative(valueOf) && (objProto = getPrototypeOf(valueOf)) && getPrototypeOf(objProto);
+
+    return objProto
+      ? (value == objProto || getPrototypeOf(value) == objProto)
+      : shimIsPlainObject(value);
+  };
+
+  /**
+   * Checks if `value` is classified as a `RegExp` object.
+   *
+   * @static
+   * @memberOf _
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+   * @example
+   *
+   * _.isRegExp(/abc/);
+   * // => true
+   *
+   * _.isRegExp('/abc/');
+   * // => false
+   */
+  function isRegExp(value) {
+    return (isObjectLike(value) && objToString.call(value) == regexpTag) || false;
+  }
+
+  /**
+   * Checks if `value` is classified as a `String` primitive or object.
+   *
+   * @static
+   * @memberOf _
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is correctly classified, else `false`.
+   * @example
+   *
+   * _.isString('abc');
+   * // => true
+   *
+   * _.isString(1);
+   * // => false
+   */
+  function isString(value) {
+    return typeof value == 'string' || (isObjectLike(value) && objToString.call(value) == stringTag);
+  }
+
+  /**
    * Checks if `value` is classified as a typed array.
    *
    * @static
@@ -1586,6 +2206,79 @@
    */
   function isTypedArray(value) {
     return isObjectLike(value) && isLength(value.length) && !!typedArrayTags[objToString.call(value)];
+  }
+
+  /**
+   * Checks if `value` is `undefined`.
+   *
+   * @static
+   * @memberOf _
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is `undefined`, else `false`.
+   * @example
+   *
+   * _.isUndefined(void 0);
+   * // => true
+   *
+   * _.isUndefined(null);
+   * // => false
+   */
+  function isUndefined(value) {
+    return typeof value == 'undefined';
+  }
+
+  /**
+   * Converts `value` to an array.
+   *
+   * @static
+   * @memberOf _
+   * @category Lang
+   * @param {*} value The value to convert.
+   * @returns {Array} Returns the converted array.
+   * @example
+   *
+   * (function() {
+   *   return _.toArray(arguments).slice(1);
+   * }(1, 2, 3));
+   * // => [2, 3]
+   */
+  function toArray(value) {
+    var length = value ? value.length : 0;
+    if (!isLength(length)) {
+      return values(value);
+    }
+    if (!length) {
+      return [];
+    }
+    return arrayCopy(value);
+  }
+
+  /**
+   * Converts `value` to a plain object flattening inherited enumerable
+   * properties of `value` to own properties of the plain object.
+   *
+   * @static
+   * @memberOf _
+   * @category Lang
+   * @param {*} value The value to convert.
+   * @returns {Object} Returns the converted plain object.
+   * @example
+   *
+   * function Foo() {
+   *   this.b = 2;
+   * }
+   *
+   * Foo.prototype.c = 3;
+   *
+   * _.assign({ 'a': 1 }, new Foo);
+   * // => { 'a': 1, 'b': 2 }
+   *
+   * _.assign({ 'a': 1 }, _.toPlainObject(new Foo));
+   * // => { 'a': 1, 'b': 2, 'c': 3 }
+   */
+  function toPlainObject(value) {
+    return baseCopy(value, keysIn(value));
   }
 
   /*------------------------------------------------------------------------*/
@@ -1678,6 +2371,35 @@
       }
     }
     return result;
+  }
+
+  /**
+   * Creates an array of the own enumerable property values of `object`.
+   *
+   * **Note:** Non-object values are coerced to objects.
+   *
+   * @static
+   * @memberOf _
+   * @category Object
+   * @param {Object} object The object to query.
+   * @returns {Array} Returns the array of property values.
+   * @example
+   *
+   * function Foo() {
+   *   this.a = 1;
+   *   this.b = 2;
+   * }
+   *
+   * Foo.prototype.c = 3;
+   *
+   * _.values(new Foo);
+   * // => [1, 2] (iteration order is not guaranteed)
+   *
+   * _.values('hi');
+   * // => ['h', 'i']
+   */
+  function values(object) {
+    return baseValues(object, keys(object));
   }
 
   /*------------------------------------------------------------------------*/
@@ -1832,6 +2554,9 @@
   lodash.keysIn = keysIn;
   lodash.matches = matches;
   lodash.sortBy = sortBy;
+  lodash.toArray = toArray;
+  lodash.toPlainObject = toPlainObject;
+  lodash.values = values;
 
   // Add aliases.
   lodash.each = forEach;
@@ -1840,14 +2565,31 @@
   /*------------------------------------------------------------------------*/
 
   // Add functions that return unwrapped values when chaining.
+  lodash.clone = clone;
+  lodash.cloneDeep = cloneDeep;
   lodash.escapeRegExp = escapeRegExp;
   lodash.identity = identity;
   lodash.isArguments = isArguments;
   lodash.isArray = isArray;
+  lodash.isBoolean = isBoolean;
+  lodash.isDate = isDate;
+  lodash.isElement = isElement;
+  lodash.isEmpty = isEmpty;
   lodash.isEqual = isEqual;
+  lodash.isError = isError;
+  lodash.isFinite = isFinite;
+  lodash.isFunction = isFunction;
+  lodash.isMatch = isMatch;
+  lodash.isNaN = isNaN;
   lodash.isNative = isNative;
+  lodash.isNull = isNull;
+  lodash.isNumber = isNumber;
   lodash.isObject = isObject;
+  lodash.isPlainObject = isPlainObject;
+  lodash.isRegExp = isRegExp;
+  lodash.isString = isString;
   lodash.isTypedArray = isTypedArray;
+  lodash.isUndefined = isUndefined;
 
   /*------------------------------------------------------------------------*/
 
@@ -2223,14 +2965,8 @@ forte.pitchClassSetData = {
       };
   }
 
-  PitchClass.prototype = {
-      get intValue() {
-          return this._.intValue;
-      }
-  };
-
   PitchClass.withInt = function(anInt) {
-      return new PitchClass(anInt, PitchClassCollectionFormats.numeric);
+      return new PitchClass(anInt);
   };
 
   PitchClass.prototype.transpose = function(transposition) {
@@ -2243,8 +2979,27 @@ forte.pitchClassSetData = {
       return this;
   };
 
-  PitchClass.prototype.stringValue = function(aFormat) {
-      return composeStringValue(this._.intValue, aFormat);
+  /**
+   * Renders the Pitch Class as string value.
+   * If no format defined, should return as numeric.
+   * @param {string, object} aFormatType Could be string, representing
+   * format type or object, being the format itself.
+   */
+  PitchClass.prototype.toString = function(aFormatType) {
+      var stringFormat = PitchClassCollectionFormats.numeric;
+      if (_.isObject(aFormatType) && !_.isString(aFormatType)) {
+        stringFormat = aFormatType;
+      } else {
+        if (!_.isUndefined(PitchClassCollectionFormats[aFormatType])) {
+          stringFormat = PitchClassCollectionFormats[aFormatType];
+        }
+      }
+
+      return composeStringValue(this.getIntValue(), stringFormat);
+  };
+
+  PitchClass.prototype.getIntValue = function() {
+    return normalize(this._.intValue);
   };
 
   function composeStringValue(value, format) {
@@ -2258,6 +3013,7 @@ forte.pitchClassSetData = {
   function invert(int) {
       return normalize(12 - normalize(int));
   }
+
   return PitchClass;
 
 })(forte.pitchClassCollectionFormats);
@@ -2338,7 +3094,7 @@ forte.pitchClassSetData = {
         get arrayValue() {
             var theResult = [];
             _.forEach(this._.theSet, function(value, index) {
-                this.push(value.intValue);
+                this.push(value.getIntValue());
             }, theResult);
             return theResult;
         },
@@ -2374,9 +3130,9 @@ forte.pitchClassSetData = {
         var multi = [];
         _.forEach(aPitchClassSet._.theSet, function(aPitchClass, index) {
             this.push({
-                sd:aPitchClassSet.copy().transpose(aPitchClass.intValue).normalize().sd(),
-                string:aPitchClassSet.copy().transpose(aPitchClass.intValue).normalize().normalForm.toString(),
-                value:aPitchClassSet.copy().transpose(aPitchClass.intValue).normalize()
+                sd:aPitchClassSet.copy().transpose(aPitchClass.getIntValue()).normalize().sd(),
+                string:aPitchClassSet.copy().transpose(aPitchClass.getIntValue()).normalize().normalForm.toString(),
+                value:aPitchClassSet.copy().transpose(aPitchClass.getIntValue()).normalize()
             });
         }, multi);
         var ordered = _.sortBy(multi, 'sd');
@@ -2416,8 +3172,10 @@ forte.pitchClassSetData = {
     };
 
     PitchClassSet.prototype.normalize = function() {
-        var newSet = _.sortBy(this._.theSet, 'intValue');
-        var index = newSet[0].intValue;
+        var newSet = _.sortBy(this._.theSet, function(n){
+          return n.getIntValue();
+        });
+        var index = newSet[0].getIntValue();
         this._.theSet = newSet;
         this.transpose(-index);
         return this;
@@ -2479,9 +3237,9 @@ forte.pitchClassSetData = {
         var setHashMap = {};
         _.forEach(aSet, function(a) {
             _.forEach(aSet, function(b){
-                if (a.intValue != b.intValue) {
-                    var hash = ((a.intValue + b.intValue + 1) / ((a.intValue * b.intValue) + 1)).toString();
-                    setHashMap[hash] = [a.intValue, b.intValue];
+                if (a.getIntValue() != b.getIntValue()) {
+                    var hash = ((a.getIntValue() + b.getIntValue() + 1) / ((a.getIntValue() * b.getIntValue()) + 1)).toString();
+                    setHashMap[hash] = [a.getIntValue(), b.getIntValue()];
                 }
             });
         });
