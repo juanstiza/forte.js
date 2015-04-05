@@ -2638,102 +2638,102 @@
 
 (function(){
 
-  var VERSION = '0.0.1';
+  var VERSION = '0.0.2';
 
   var forte = forte || {};
 
   forte.pitchClassCollectionFormats = {
   numeric: {
-      0:'0',
-      1:'1',
-      2:'2',
-      3:'3',
-      4:'4',
-      5:'5',
-      6:'6',
-      7:'7',
-      8:'8',
-      9:'9',
-      10:'10',
-      11:'11'
+    0: '0',
+    1: '1',
+    2: '2',
+    3: '3',
+    4: '4',
+    5: '5',
+    6: '6',
+    7: '7',
+    8: '8',
+    9: '9',
+    10: '10',
+    11: '11'
   },
   alphanumeric: {
-      0:'0',
-      1:'1',
-      2:'2',
-      3:'3',
-      4:'4',
-      5:'5',
-      6:'6',
-      7:'7',
-      8:'8',
-      9:'9',
-      10:'a',
-      11:'b'
+    0: '0',
+    1: '1',
+    2: '2',
+    3: '3',
+    4: '4',
+    5: '5',
+    6: '6',
+    7: '7',
+    8: '8',
+    9: '9',
+    10: 'a',
+    11: 'b'
   },
   latin: {
-      0:'do',
-      1:['do#','reb'],
-      2:'re',
-      3:['re#','mib'],
-      4:'mi',
-      5:'fa',
-      6:['fa#','solb'],
-      7:'sol',
-      8:['sol#','lab'],
-      9:'la',
-      10:['la#','sib'],
-      11:'si'
+    0: 'do',
+    1: ['do#', 'reb'],
+    2: 're',
+    3: ['re#', 'mib'],
+    4: 'mi',
+    5: 'fa',
+    6: ['fa#', 'solb'],
+    7: 'sol',
+    8: ['sol#', 'lab'],
+    9: 'la',
+    10: ['la#', 'sib'],
+    11: 'si'
   },
   american: {
-      0:'c',
-      1:['c#','db'],
-      2:'d',
-      3:['d#','eb'],
-      4:'e',
-      5:'f',
-      6:['f#','gb'],
-      7:'g',
-      8:['g#','ab'],
-      9:'a',
-      10:['a#','bb'],
-      11:'b'
+    0: 'c',
+    1: ['c#', 'db'],
+    2: 'd',
+    3: ['d#', 'eb'],
+    4: 'e',
+    5: 'f',
+    6: ['f#', 'gb'],
+    7: 'g',
+    8: ['g#', 'ab'],
+    9: 'a',
+    10: ['a#', 'bb'],
+    11: 'b'
   }
 };
 
 forte.pitchClassCollectionTypes = {
-    primeForm: {
-        open: '(',
-        close: ')',
-        separator: ',',
-        max: 12,
-        min: 3
-    },
-    intervalVector: {
-        open: '<',
-        close: '>',
-        separator: '',
-        max: 6,
-        min: 6
-    },
-    primeInversion: {
-        open: '[',
-        close: ']',
-        separator: ',',
-        max: 12,
-        min: 3
-    },
-    normalForm: {
-        open: '',
-        close: '',
-        separator: ',',
-        max: 12,
-        min: 3
-    }
+  primeForm: {
+    open: '(',
+    close: ')',
+    separator: ',',
+    max: 12,
+    min: 3
+  },
+  intervalVector: {
+    open: '<',
+    close: '>',
+    separator: '',
+    max: 6,
+    min: 6
+  },
+  primeInversion: {
+    open: '[',
+    close: ']',
+    separator: ',',
+    max: 12,
+    min: 3
+  },
+  normalForm: {
+    open: '',
+    close: '',
+    separator: ',',
+    max: 12,
+    min: 3
+  }
 };
 
 forte.pitchClassSetData = {
-"3": {
+  "3": {
     "3-1": [0, 1, 2],
     "3-2": [0, 1, 3],
     "3-3": [0, 1, 4],
@@ -2746,8 +2746,8 @@ forte.pitchClassSetData = {
     "3-10": [0, 3, 6],
     "3-11": [0, 3, 7],
     "3-12": [0, 4, 8]
-},
-"4": {
+  },
+  "4": {
     "4-1": [0, 1, 2, 3],
     "4-2": [0, 1, 2, 4],
     "4-3": [0, 1, 3, 4],
@@ -2777,8 +2777,8 @@ forte.pitchClassSetData = {
     "4-27": [0, 2, 5, 8],
     "4-28": [0, 3, 6, 9],
     "4-z29": [0, 1, 3, 7]
-},
-"5": {
+  },
+  "5": {
     "5-1": [0, 1, 2, 3, 4],
     "5-2": [0, 1, 2, 3, 5],
     "5-3": [0, 1, 2, 4, 5],
@@ -2817,8 +2817,8 @@ forte.pitchClassSetData = {
     "5-z36": [0, 1, 2, 4, 7],
     "5-z37": [0, 3, 4, 5, 8],
     "5-z38": [0, 1, 2, 5, 8]
-},
-"6": {
+  },
+  "6": {
     "6-1": [0, 1, 2, 3, 4, 5],
     "6-2": [0, 1, 2, 3, 4, 6],
     "6-z3": [0, 1, 2, 3, 5, 6],
@@ -2869,8 +2869,8 @@ forte.pitchClassSetData = {
     "6-z48": [0, 1, 2, 5, 7, 9],
     "6-z49": [0, 1, 3, 4, 7, 9],
     "6-z50": [0, 1, 4, 6, 7, 9]
-},
-"7": {
+  },
+  "7": {
     "7-1": [0, 1, 2, 3, 4, 5, 6],
     "7-2": [0, 1, 2, 3, 4, 5, 7],
     "7-3": [0, 1, 2, 3, 4, 5, 8],
@@ -2907,8 +2907,8 @@ forte.pitchClassSetData = {
     "7-z36": [0, 1, 2, 3, 5, 6, 8],
     "7-z37": [0, 1, 3, 4, 5, 7, 8],
     "7-z38": [0, 1, 2, 4, 5, 7, 8]
-},
-"8": {
+  },
+  "8": {
     "8-1": [0, 1, 2, 3, 4, 5, 6, 7],
     "8-2": [0, 1, 2, 3, 4, 5, 6, 8],
     "8-3": [0, 1, 2, 3, 4, 5, 6, 9],
@@ -2938,8 +2938,8 @@ forte.pitchClassSetData = {
     "8-27": [0, 1, 2, 4, 5, 7, 8, 10],
     "8-28": [0, 1, 3, 4, 6, 7, 9, 10],
     "8-z29": [0, 1, 2, 3, 5, 6, 7, 9]
-},
-"9": {
+  },
+  "9": {
     "9-1": [0, 1, 2, 3, 4, 5, 6, 7, 8],
     "9-2": [0, 1, 2, 3, 4, 5, 6, 7, 9],
     "9-3": [0, 1, 2, 3, 4, 5, 6, 8, 9],
@@ -2952,31 +2952,31 @@ forte.pitchClassSetData = {
     "9-10": [0, 1, 2, 3, 4, 6, 7, 9, 10],
     "9-11": [0, 1, 2, 3, 5, 6, 7, 9, 10],
     "9-12": [0, 1, 2, 4, 5, 6, 8, 9, 1]
-}
+  }
 };
 
 
 
-  forte.PitchClass = (function(PitchClassCollectionFormats){
+  forte.PitchClass = (function(PitchClassCollectionFormats) {
 
   function PitchClass(anInt) {
-      this._ = {
-          intValue: anInt
-      };
+    this._ = {
+      intValue: anInt
+    };
   }
 
   PitchClass.withInt = function(anInt) {
-      return new PitchClass(anInt);
+    return new PitchClass(anInt);
   };
 
   PitchClass.prototype.transpose = function(transposition) {
-      this._.intValue = normalize(this._.intValue + transposition);
-      return this;
+    this._.intValue = normalize(this._.intValue + transposition);
+    return this;
   };
 
   PitchClass.prototype.invert = function() {
-      this._.intValue = invert(this._.intValue);
-      return this;
+    this._.intValue = invert(this._.intValue);
+    return this;
   };
 
   /**
@@ -2986,16 +2986,16 @@ forte.pitchClassSetData = {
    * format type or object, being the format itself.
    */
   PitchClass.prototype.toString = function(aFormatType) {
-      var stringFormat = PitchClassCollectionFormats.numeric;
-      if (_.isObject(aFormatType) && !_.isString(aFormatType)) {
-        stringFormat = aFormatType;
-      } else {
-        if (!_.isUndefined(PitchClassCollectionFormats[aFormatType])) {
-          stringFormat = PitchClassCollectionFormats[aFormatType];
-        }
+    var stringFormat = PitchClassCollectionFormats.numeric;
+    if (_.isObject(aFormatType) && !_.isString(aFormatType)) {
+      stringFormat = aFormatType;
+    } else {
+      if (!_.isUndefined(PitchClassCollectionFormats[aFormatType])) {
+        stringFormat = PitchClassCollectionFormats[aFormatType];
       }
+    }
 
-      return composeStringValue(this.getIntValue(), stringFormat);
+    return composeStringValue(this.getIntValue(), stringFormat);
   };
 
   PitchClass.prototype.getIntValue = function() {
@@ -3003,66 +3003,66 @@ forte.pitchClassSetData = {
   };
 
   function composeStringValue(value, format) {
-      return format[value];
+    return format[value];
   }
 
   function normalize(anInt) {
-      return ((anInt % 12) + 12) % 12;
+    return ((anInt % 12) + 12) % 12;
   }
 
   function invert(int) {
-      return normalize(12 - normalize(int));
+    return normalize(12 - normalize(int));
   }
 
   return PitchClass;
 
 })(forte.pitchClassCollectionFormats);
 
-  forte.PitchClassCollection = (function(PitchClassCollectionFormats, PitchClassCollectionTypes){
+  forte.PitchClassCollection = (function(PitchClassCollectionFormats, PitchClassCollectionTypes) {
 
   function PitchClassCollection(anArray, PitchClassCollectionType, pitchFormat) {
-      var _pitchFormat;
-      if (pitchFormat !== undefined) {
-          _pitchFormat = pitchFormat;
-      } else _pitchFormat = PitchClassCollectionFormats.numeric;
-      this._ = {
-          arrayValue: anArray,
-          collectionType: PitchClassCollectionType,
-          pitchFormat: _pitchFormat
-      };
+    var _pitchFormat;
+    if (pitchFormat !== undefined) {
+      _pitchFormat = pitchFormat;
+    } else _pitchFormat = PitchClassCollectionFormats.numeric;
+    this._ = {
+      arrayValue: anArray,
+      collectionType: PitchClassCollectionType,
+      pitchFormat: _pitchFormat
+    };
   }
 
   PitchClassCollection.prototype = {
-      toString: function() {
-          return composeStringValue(this._.pitchFormat, this._.collectionType, this._.arrayValue);
-      },
-      toArray: function() {
-          return this._.arrayValue;
-      }
+    toString: function() {
+      return composeStringValue(this._.pitchFormat, this._.collectionType, this._.arrayValue);
+    },
+    toArray: function() {
+      return this._.arrayValue;
+    }
   };
 
   function composeStringValue(aFormat, theCollectionFormat, myArray) {
-      var theFormat = aFormat;
-      if (myArray.length > theCollectionFormat.max) {
-          throw 'myArray.length must be lower than '+theCollectionFormat.max;
-      }
-      if (myArray.length < theCollectionFormat.min) {
-          throw 'myArray.length must be higher than '+theCollectionFormat.min;
-      }
-      var theArray = [];
-      _.forEach(myArray, function(element){
-        this.push(theFormat[element]);
-      }, theArray);
-      var theString = theArray.join(theCollectionFormat.separator);
-      return theCollectionFormat.open+theString+theCollectionFormat.close;
+    var theFormat = aFormat;
+    if (myArray.length > theCollectionFormat.max) {
+      throw 'myArray.length must be lower than ' + theCollectionFormat.max;
+    }
+    if (myArray.length < theCollectionFormat.min) {
+      throw 'myArray.length must be higher than ' + theCollectionFormat.min;
+    }
+    var theArray = [];
+    _.forEach(myArray, function(element) {
+      this.push(theFormat[element]);
+    }, theArray);
+    var theString = theArray.join(theCollectionFormat.separator);
+    return theCollectionFormat.open + theString + theCollectionFormat.close;
   }
 
   PitchClassCollection.withArrayAndType = function(anArray, PitchClassCollectionType) {
-      return new PitchClassCollection(anArray, PitchClassCollectionType);
+    return new PitchClassCollection(anArray, PitchClassCollectionType);
   };
 
   PitchClassCollection.withArrayTypeAndFormat = function(anArray, PitchClassCollectionType, aFormat) {
-      return new PitchClassCollection(anArray, PitchClassCollectionType, aFormat);
+    return new PitchClassCollection(anArray, PitchClassCollectionType, aFormat);
   };
 
   return PitchClassCollection;
@@ -3073,213 +3073,221 @@ forte.pitchClassSetData = {
   PitchClassCollectionFormats,
   PitchClassCollectionTypes,
   PitchClassCollection,
-  PitchClassSetData){
+  PitchClassSetData) {
 
-    function PitchClassSet(anArray, isSet) {
-        this._ = {
-            theSet : [],
-            PitchClassCollectionFormat: PitchClassCollectionFormats.numeric,
-            PitchClassCollectionType: PitchClassCollectionTypes.primeForm
-        };
-        if (isSet) {
-            this._.theSet = anArray;
-        } else {
-            _.forEach(anArray, function(value, index){
-                this.push(PitchClass.withInt(parseInt(value)));
-            }, this._.theSet);
+  function PitchClassSet(anArray, isSet) {
+    this._ = {
+      theSet: [],
+      PitchClassCollectionFormat: PitchClassCollectionFormats.numeric,
+      PitchClassCollectionType: PitchClassCollectionTypes.primeForm
+    };
+    if (isSet) {
+      this._.theSet = anArray;
+    } else {
+      _.forEach(anArray, function(value, index) {
+        this.push(PitchClass.withInt(parseInt(value)));
+      }, this._.theSet);
+    }
+  }
+
+  /**
+   * Returns the set's array value.
+   */
+  PitchClassSet.prototype.getArrayValue = function() {
+    var theResult = [];
+    _.forEach(this._.theSet, function(value, index) {
+      this.push(value.getIntValue());
+    }, theResult);
+    return theResult;
+  }
+
+  PitchClassSet.prototype.getNormalForm = function() {
+    return PitchClassCollection.withArrayTypeAndFormat(this.getArrayValue(),
+      this._.PitchClassCollectionType,
+      this._.PitchClassCollectionFormat);
+  }
+
+  PitchClassSet.prototype.getPrimeForm = function() {
+    return getPrimeForm(this).primeForm;
+  }
+
+  PitchClassSet.prototype.getPrimeInversion = function() {
+    return getPrimeForm(this).primeInversion;
+  }
+
+  PitchClassSet.prototype.getCardinal = function() {
+    return this._.theSet.length;
+  }
+
+  PitchClassSet.prototype.getForteCode = function() {
+    return getPrimeForm(this).forteCode;
+  }
+
+  PitchClassSet.prototype.getHash = function() {
+    return {
+      value: hashValue(this.getArrayValue()),
+      map: hashMap(this.getArrayValue())
+    };
+  }
+
+  PitchClassSet.prototype.getIv = function() {
+    return getIv(this._.theSet);
+  }
+
+  function getSmallest(aPitchClassSet) {
+    var multi = [];
+    _.forEach(aPitchClassSet._.theSet, function(aPitchClass, index) {
+      this.push({
+        sd: aPitchClassSet.copy().transpose(aPitchClass.getIntValue()).normalize().sd(),
+        string: aPitchClassSet.copy().transpose(aPitchClass.getIntValue()).normalize().getNormalForm().toString(),
+        value: aPitchClassSet.copy().transpose(aPitchClass.getIntValue()).normalize()
+      });
+    }, multi);
+    var ordered = _.sortBy(multi, 'sd');
+    return ordered[0].value.getArrayValue();
+  }
+
+  //TODO: find also inverted form, if it exists (should be either original or inverted).
+  function getPrimeForm(aPitchClassSet) {
+    var originalHash = getSmallest(aPitchClassSet.copy());
+    var invertedHash = getSmallest(aPitchClassSet.copy().invert());
+    var setData = PitchClassSetData[aPitchClassSet.getArrayValue().length];
+    var result = {
+      forteCode: "",
+      primeForm: {},
+      primeInversion: {},
+    };
+    _.forEach(setData, function(value, index) {
+      if (_.isEqual(value, originalHash)) {
+        result.primeForm = PitchClassCollection.withArrayTypeAndFormat(value, PitchClassCollectionTypes.primeForm, PitchClassCollectionFormats.numeric);
+        result.forteCode = index;
+        result.primeInversion = PitchClassCollection.withArrayTypeAndFormat(invertedHash, PitchClassCollectionTypes.primeInversion, PitchClassCollectionFormats.numeric);
+      }
+      if (_.isEqual(value, invertedHash)) {
+        result.primeForm = PitchClassCollection.withArrayTypeAndFormat(value, PitchClassCollectionTypes.primeForm, PitchClassCollectionFormats.numeric);
+        result.forteCode = index;
+        result.primeInversion = PitchClassCollection.withArrayTypeAndFormat(originalHash, PitchClassCollectionTypes.primeInversion, PitchClassCollectionFormats.numeric);
+      }
+    });
+    return result;
+  }
+
+  PitchClassSet.prototype.transpose = function(transposition) {
+    _.forEach(this._.theSet, function(aPitchClass, index) {
+      aPitchClass.transpose(transposition);
+    });
+    return this;
+  };
+
+  PitchClassSet.prototype.normalize = function() {
+    var newSet = _.sortBy(this._.theSet, function(n) {
+      return n.getIntValue();
+    });
+    var index = newSet[0].getIntValue();
+    this._.theSet = newSet;
+    this.transpose(-index);
+    return this;
+  };
+
+  PitchClassSet.prototype.invert = function() {
+    _.forEach(this._.theSet, function(aPitchClass) {
+      aPitchClass.invert();
+    });
+    return this;
+  };
+
+  PitchClassSet.prototype.sd = function() {
+    var mean = this.mean();
+    var sd = 0;
+    var sum = 0;
+    _.forEach(this.arrayValue, function(value) {
+      sum = (mean - value) + sum;
+    });
+    return Math.sqrt(mean / this.getArrayValue().length);
+  };
+
+  /**
+   * Get the mean out of an array.
+   * @param anArray
+   */
+  PitchClassSet.prototype.mean = function() {
+    var mean = 0;
+    _.forEach(this.getArrayValue(), function(value) {
+      mean += value;
+    }, mean);
+    return mean / this.getArrayValue().length;
+  };
+
+  PitchClassSet.prototype.copy = function() {
+    return PitchClassSet.withSet(this._.theSet);
+  };
+
+  function hashValue(anArray) {
+    var value = hashMap(anArray);
+    return parseInt(value.join(''), 2);
+  }
+
+  function hashMap(anArray) {
+    var value = [];
+    for (var i = 0; i < 12; i++) {
+      if (anArray.indexOf(i) != -1) {
+        value[i] = 1;
+      } else value[i] = 0;
+    }
+    return value;
+  }
+
+  /**
+   * Interval Vector
+   * @returns {*}
+   */
+  function getIv(aSet) {
+    var setHashMap = {};
+    _.forEach(aSet, function(a) {
+      _.forEach(aSet, function(b) {
+        if (a.getIntValue() != b.getIntValue()) {
+          var hash = ((a.getIntValue() + b.getIntValue() + 1) / ((a.getIntValue() * b.getIntValue()) + 1)).toString();
+          setHashMap[hash] = [a.getIntValue(), b.getIntValue()];
         }
+      });
+    });
+    var diffSet = [];
+    _.forEach(setHashMap, function(value) {
+      diffSet.push(Math.abs(value[0] - value[1]));
+    });
+    var countSet = {};
+    for (var i = 1; i < 7; i++) {
+      countSet[i] = 0;
     }
+    _.forEach(diffSet, function(value) {
+      countSet[value % 6] += 1;
+    });
+    var intervalVector = [];
+    _.forEach(countSet, function(value) {
+      this.push(value);
+    }, intervalVector);
+    return PitchClassCollection.withArrayTypeAndFormat(intervalVector,
+      PitchClassCollectionTypes.intervalVector,
+      PitchClassCollectionFormats.numeric);
+  }
 
-    PitchClassSet.prototype = {
-        get arrayValue() {
-            var theResult = [];
-            _.forEach(this._.theSet, function(value, index) {
-                this.push(value.getIntValue());
-            }, theResult);
-            return theResult;
-        },
-        get normalForm() {
-            return PitchClassCollection.withArrayTypeAndFormat(this.arrayValue,
-                this._.PitchClassCollectionType,
-                this._.PitchClassCollectionFormat);
-        },
-        get primeForm() {
-            return getPrimeForm(this).primeForm;
-        },
-        get primeInversion() {
-            return getPrimeForm(this).primeInversion;
-        },
-        get cardinal() {
-            return this._.theSet.length;
-        },
-        get forteCode() {
-            return getPrimeForm(this).forteCode;
-        },
-        get hash() {
-            return {
-                value: hashValue(this.arrayValue),
-                map: hashMap(this.arrayValue)
-            };
-        },
-        get iv() {
-            return getIv(this._.theSet);
-        }
-    };
+  PitchClassSet.withArray = function(anArray) {
+    return new PitchClassSet(anArray);
+  };
 
-    function getSmallest(aPitchClassSet) {
-        var multi = [];
-        _.forEach(aPitchClassSet._.theSet, function(aPitchClass, index) {
-            this.push({
-                sd:aPitchClassSet.copy().transpose(aPitchClass.getIntValue()).normalize().sd(),
-                string:aPitchClassSet.copy().transpose(aPitchClass.getIntValue()).normalize().normalForm.toString(),
-                value:aPitchClassSet.copy().transpose(aPitchClass.getIntValue()).normalize()
-            });
-        }, multi);
-        var ordered = _.sortBy(multi, 'sd');
-        return ordered[0].value.arrayValue;
-    }
+  PitchClassSet.withSet = function(aSet) {
+    return new PitchClassSet(aSet, true);
+  };
 
-    //TODO: find also inverted form, if it exists (should be either original or inverted).
-    function getPrimeForm(aPitchClassSet) {
-        var originalHash = getSmallest(aPitchClassSet.copy());
-        var invertedHash = getSmallest(aPitchClassSet.copy().invert());
-        var setData = PitchClassSetData[aPitchClassSet.arrayValue.length];
-        var result = {
-            forteCode: "",
-            primeForm: {},
-            primeInversion: {},
-        };
-        _.forEach(setData, function(value, index){
-            if (_.isEqual(value, originalHash)) {
-                result.primeForm = PitchClassCollection.withArrayTypeAndFormat(value, PitchClassCollectionTypes.primeForm, PitchClassCollectionFormats.numeric);
-                result.forteCode = index;
-                result.primeInversion = PitchClassCollection.withArrayTypeAndFormat(invertedHash, PitchClassCollectionTypes.primeInversion, PitchClassCollectionFormats.numeric);
-            }
-            if (_.isEqual(value, invertedHash)) {
-                result.primeForm = PitchClassCollection.withArrayTypeAndFormat(value, PitchClassCollectionTypes.primeForm, PitchClassCollectionFormats.numeric);
-                result.forteCode = index;
-                result.primeInversion = PitchClassCollection.withArrayTypeAndFormat(originalHash, PitchClassCollectionTypes.primeInversion, PitchClassCollectionFormats.numeric);
-            }
-        });
-        return result;
-    }
+  PitchClassSet.withMap = function(aMap) {
+    var set = [];
+    _.forEach(aMap, function(value, index) {
+      if (value == 1) set.push(index);
+    });
+    return new PitchClassSet(set);
+  };
 
-    PitchClassSet.prototype.transpose = function(transposition) {
-        _.forEach(this._.theSet, function(aPitchClass, index){
-          aPitchClass.transpose(transposition);
-        });
-        return this;
-    };
-
-    PitchClassSet.prototype.normalize = function() {
-        var newSet = _.sortBy(this._.theSet, function(n){
-          return n.getIntValue();
-        });
-        var index = newSet[0].getIntValue();
-        this._.theSet = newSet;
-        this.transpose(-index);
-        return this;
-    };
-
-    PitchClassSet.prototype.invert = function() {
-        _.forEach(this._.theSet, function(aPitchClass){
-            aPitchClass.invert();
-        });
-        return this;
-    };
-
-    PitchClassSet.prototype.sd = function() {
-        var mean = this.mean();
-        var sd = 0;
-        var sum = 0;
-        _.forEach(this.arrayValue, function(value){
-            sum = (mean - value) + sum;
-        });
-        return Math.sqrt(mean / this.arrayValue.length);
-    };
-
-    /**
-     * Get the mean out of an array.
-     * @param anArray
-     */
-    PitchClassSet.prototype.mean = function() {
-        var mean = 0;
-        _.forEach(this.arrayValue, function(value){
-            mean += value;
-        }, mean);
-        return mean/this.arrayValue.length;
-    };
-
-    PitchClassSet.prototype.copy = function() {
-        return PitchClassSet.withSet(this._.theSet);
-    };
-
-    function hashValue(anArray) {
-        var value = hashMap(anArray);
-        return parseInt(value.join(''), 2);
-    }
-
-    function hashMap(anArray) {
-        var value = [];
-        for (var i = 0; i < 12; i++) {
-            if (anArray.indexOf(i) != -1) {
-                value[i] = 1;
-            } else value[i] = 0;
-        }
-        return value;
-    }
-
-    /**
-     * Interval Vector
-     * @returns {*}
-     */
-    function getIv(aSet) {
-        var setHashMap = {};
-        _.forEach(aSet, function(a) {
-            _.forEach(aSet, function(b){
-                if (a.getIntValue() != b.getIntValue()) {
-                    var hash = ((a.getIntValue() + b.getIntValue() + 1) / ((a.getIntValue() * b.getIntValue()) + 1)).toString();
-                    setHashMap[hash] = [a.getIntValue(), b.getIntValue()];
-                }
-            });
-        });
-        var diffSet = [];
-        _.forEach(setHashMap, function(value){
-            diffSet.push(Math.abs(value[0] - value[1]));
-        });
-        var countSet = {};
-        for (var i = 1; i < 7; i++) {
-            countSet[i] = 0;
-        }
-        _.forEach(diffSet, function(value){
-            countSet[value%6] += 1;
-        });
-        var intervalVector = [];
-        _.forEach(countSet, function(value) {
-            this.push(value);
-        }, intervalVector);
-        return PitchClassCollection.withArrayTypeAndFormat(intervalVector,
-            PitchClassCollectionTypes.intervalVector,
-            PitchClassCollectionFormats.numeric);
-    }
-
-    PitchClassSet.withArray = function(anArray) {
-        return new PitchClassSet(anArray);
-    };
-
-    PitchClassSet.withSet = function(aSet) {
-        return new PitchClassSet(aSet, true);
-    };
-
-    PitchClassSet.withMap = function(aMap) {
-        var set = [];
-        _.forEach(aMap, function(value, index){
-            if (value == 1) set.push(index);
-        });
-        return new PitchClassSet(set);
-    };
-
-    return PitchClassSet;
+  return PitchClassSet;
 
 })(forte.PitchClass,
   forte.pitchClassCollectionFormats,

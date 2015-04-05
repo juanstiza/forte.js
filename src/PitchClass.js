@@ -1,23 +1,23 @@
-forte.PitchClass = (function(PitchClassCollectionFormats){
+forte.PitchClass = (function(PitchClassCollectionFormats) {
 
   function PitchClass(anInt) {
-      this._ = {
-          intValue: anInt
-      };
+    this._ = {
+      intValue: anInt
+    };
   }
 
   PitchClass.withInt = function(anInt) {
-      return new PitchClass(anInt);
+    return new PitchClass(anInt);
   };
 
   PitchClass.prototype.transpose = function(transposition) {
-      this._.intValue = normalize(this._.intValue + transposition);
-      return this;
+    this._.intValue = normalize(this._.intValue + transposition);
+    return this;
   };
 
   PitchClass.prototype.invert = function() {
-      this._.intValue = invert(this._.intValue);
-      return this;
+    this._.intValue = invert(this._.intValue);
+    return this;
   };
 
   /**
@@ -27,16 +27,16 @@ forte.PitchClass = (function(PitchClassCollectionFormats){
    * format type or object, being the format itself.
    */
   PitchClass.prototype.toString = function(aFormatType) {
-      var stringFormat = PitchClassCollectionFormats.numeric;
-      if (_.isObject(aFormatType) && !_.isString(aFormatType)) {
-        stringFormat = aFormatType;
-      } else {
-        if (!_.isUndefined(PitchClassCollectionFormats[aFormatType])) {
-          stringFormat = PitchClassCollectionFormats[aFormatType];
-        }
+    var stringFormat = PitchClassCollectionFormats.numeric;
+    if (_.isObject(aFormatType) && !_.isString(aFormatType)) {
+      stringFormat = aFormatType;
+    } else {
+      if (!_.isUndefined(PitchClassCollectionFormats[aFormatType])) {
+        stringFormat = PitchClassCollectionFormats[aFormatType];
       }
+    }
 
-      return composeStringValue(this.getIntValue(), stringFormat);
+    return composeStringValue(this.getIntValue(), stringFormat);
   };
 
   PitchClass.prototype.getIntValue = function() {
@@ -44,15 +44,15 @@ forte.PitchClass = (function(PitchClassCollectionFormats){
   };
 
   function composeStringValue(value, format) {
-      return format[value];
+    return format[value];
   }
 
   function normalize(anInt) {
-      return ((anInt % 12) + 12) % 12;
+    return ((anInt % 12) + 12) % 12;
   }
 
   function invert(int) {
-      return normalize(12 - normalize(int));
+    return normalize(12 - normalize(int));
   }
 
   return PitchClass;

@@ -1,6 +1,6 @@
 # Forte.js
 
-Version 0.0.1
+Version 0.0.2
 
 ## API
 
@@ -26,15 +26,15 @@ Version 0.0.1
 
 ### Get prime form
 
-    pcs.primeForm.toString();
+    pcs.getPrimeForm().toString();
     //returns '(0,1,4,8)'
 
 ### Get prime inversion
 
-    pcs.primeInversion.toString();
+    pcs.getPrimeInversion().toString();
     //returns '[0,3,4,8]'
 
 ### Get interval vector
 
-    pcs.iv.toString();
+    pcs.getIv().toString();
     //returns '<101310>'
